@@ -1,0 +1,106 @@
+.mattabgroup{
+    background: -webkit-linear-gradient(top, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(102,102,102,1) 25%,rgba(71,71,71,1) 39%,rgba(44,44,44,1) 50%,rgba(0,0,0,1) 51%,rgba(17,17,17,1) 60%,rgba(43,43,43,1) 77%,rgba(28,28,28,1) 91%,rgba(19,19,19,1) 100%); 
+ 
+}
+
+div.a {
+  line-height: 10px;
+}
+.mattab{
+    color:white !important;
+} 
+
+.matinput{
+ margin-left: 10px; 
+ margin-right: 10px;
+}
+
+
+.contenedor_btns_modal {
+margin: 5px auto;
+width: 100%;
+display:flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: center;
+align-content: center;
+align-items: center;
+background-color: green;
+border: 1px solid #99cccc;
+}
+
+.dailogposition{
+  width:80%;
+  margin-top :20%;
+}
+
+.contenido_btns_modal {
+  width: 10%;
+  height: 100%;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+  margin-right: 5px;
+  }
+
+.md-button-right .button-group {
+    position: absolute;
+    right: 0;
+    margin: 0;
+  }
+ 
+  .mySelectedPanel .mat-option {
+    font-family: 'Times New Roman';
+    font-size: 15px;
+    background: linear-gradient(to right, #d3cce3, #e9e4f0);
+    margin-left: 20px; 
+}
+
+ .mytitle{
+    font-family: 'Times New Roman';
+    font-size: 15px;
+    color: black;
+    font-weight: bold;
+ }
+
+ .flex-container {
+    display: flex;
+    justify-content: left;
+    margin-left: 5%;
+  }
+
+
+
+ .cardfooter{
+    background: #5D4157;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color:white; 
+    display: flex;
+    text-align:center;
+    font-size: 10px;
+    margin:auto;
+    justify-content: center;
+    align-items: center;
+    
+ }
+ 
+ .cardcontent{
+       border-color: black;
+       border-style: solid;
+       border-width: 1px;
+ }
+
+ .cardfirma{
+   height: 20px ;
+ }
+
+  .rowcolor{
+  background:whitesmoke;
+}
+.card {
+    max-width: 550px;
+    margin-top:20px;
+    margin-left: 20px;
+  }
+  

@@ -1,0 +1,206 @@
+<div id="forms" class="page-layout simple fullwidth" fxLayout="column">
+  <mat-toolbar class="matnavapp">
+      
+        <button mat-icon-button matTooltip="Regresar Anterior" (click)="BtnRegresar()" type="button"><mat-icon>arrow_back_ios</mat-icon></button> 
+        <button mat-icon-button *ngIf= "buttonsDisabled" matTooltip="Guardar Nuevo Cliente" name="btnguardar"  form="CreateForm"  [disabled]="form.invalid" type="submit"> <mat-icon>save</mat-icon> </button>
+    <!--    <button mat-icon-button matTooltip="Limpiar Forma" (click)="resetForm(formDirective);" buttonDisabled="true" type="button"><mat-icon>clear_all</mat-icon></button> 
+    -->   
+      <button   id="save" mat-icon-button matTooltip="Actualizar Cliente" (click)="Actualizar()" [disabled]="buttonsDisabled" type="button"><mat-icon>save</mat-icon></button>
+      <button   id="save2" mat-icon-button matTooltip="Actualizar Cliente" (click)="Actualizar()" [disabled]="buttonsDisabled" type="button"><mat-icon>edit</mat-icon></button>
+      <button  mat-icon-button matTooltip="Crear Orden" (click)="btnOrden('orden/',0)"  [disabled]="buttonsDisabled" type="button"><mat-icon>note_add</mat-icon></button>
+  
+      <!--  <button mat-icon-button matTooltip="Migrar Cliente" (click)="migracion()"  type="button"><mat-icon>edit</mat-icon></button>
+    -->
+     
+        <div class="md-button-right ">   
+             <button md-button class="card-container button-group mytitle"> [INGRESO DE CLIENTES]</button>
+         </div>
+  </mat-toolbar> 
+                    
+  <div class="loading-indicator">
+    <mat-spinner *ngIf="dataSourceCliente.loading$ | async" diameter="75" color="accent" ></mat-spinner>
+</div>
+  
+           <form  novalidate id="CreateForm" (ngSubmit)="guardar($event)"  #formDirective="ngForm" 
+           [formGroup]="form"    fxLayout="column" fxLayoutAlign="start"
+                    fxFlex="1 0 auto" name="form" >
+                    <ng-template matStepLabel>Ingreso de Cliente</ng-template>
+                          <div fxLayout="row" fxFlex="1 0 auto">
+                              <mat-form-field class="Input mySelectedPanel" fxFlex="15">
+                                   <input formControlName="code" matInput placeholder="{{'SAMPLE.CODE' | translate}}" 
+                                          name="code"
+                                          [readonly]="true"
+                                          type="number">
+                              </mat-form-field>
+                               
+                              <mat-form-field class="Input" fxFlex="50" >
+                                            <mat-icon style='color:cadetblue' matSuffix>person</mat-icon>
+                                           <input formControlName="firstName" matInput placeholder="{{'SAMPLE.FIRSTNAME' | translate}}" 
+                                                    name="firstName"
+                                                     required [errorStateMatcher]="matcher">
+                                                    <mat-error *ngIf="form.get('lastName').hasError('required')">
+                                                    {{'SAMPLE.FIRSTNAMEREQUIRED' | translate}}
+                                                    </mat-error>
+                                  
+                              </mat-form-field>
+                        
+
+                              <mat-form-field class="Input" fxFlex="50" >
+                                        <mat-icon style='color:rgb(2, 5, 5)'  matSuffix>person</mat-icon>   
+                                  <input matInput formControlName="lastName" placeholder="{{'SAMPLE.LASTNAME' | translate}}" 
+                                         name="lastName"
+                                         required [errorStateMatcher]="matcher">
+                                  <mat-error *ngIf="form.get('lastName').hasError('required')">
+                                          {{'SAMPLE.LASTNAMEREQUIRED' | translate}}
+                                  </mat-error>
+                              </mat-form-field>
+
+                           </div>
+
+              <div class="rowcolor" fxLayout="row"  fxFlex="1 0 auto">
+                      <mat-form-field class="Input" fxFlex="15">
+                      <input  formControlName="nit" matInput placeholder="{{'SAMPLE.NIT' | translate}}" 
+                      name="nit"
+                    
+                      >
+                      </mat-form-field>
+                      <mat-form-field class="Input" fxFlex="13">
+                      <input formControlName="dpi" matInput placeholder="{{'SAMPLE.DPI' | translate}}" 
+                      name="dpi"
+                    
+                      type="number"
+                      min="1000000000000"
+                      max="9999999999999"      
+                      [errorStateMatcher]="matcher">
+     
+                      <mat-error *ngIf="form.get('dpi').hasError('min')">
+                                {{'SAMPLE.DPIMINLENGTH' | translate}} 
+                        </mat-error>
+                        <mat-error *ngIf="!form.get('dpi').hasError('min')">
+                                {{'SAMPLE.DPIREQUIRED' | translate}}  
+                        </mat-error>
+                     </mat-form-field>
+
+                     <mat-form-field class="Input" fxFlex="22.5">
+                        <mat-select formControlName='state' (selectionChange)="onSelectionChanged($event)"
+                         placeholder="{{'SAMPLE.STATE' | translate}}"  
+                         #singleSelect>
+                          <mat-select-search [formControl]="stateFilterControl" 
+                           > </mat-select-search>
+                           <mat-option>Ninguno</mat-option>
+                           <mat-option 
+                              *ngFor="let dep of filteredState | async"
+                            [value]="dep.id">
+                            {{dep.name}}
+                          </mat-option>
+                        </mat-select>  
+                  </mat-form-field>
+                  
+
+                  <mat-form-field class="Input" fxFlex="38">
+                      <mat-select formControlName="city" placeholder="{{'SAMPLE.CITY' | translate}}" 
+                       #singleSelectCity>
+                        <mat-select-search [formControl]="cityFilterControl"> </mat-select-search>
+                        <mat-option>Ninguno</mat-option>
+                         <mat-option   
+                          *ngFor="let c of filteredCity | async"
+                          [value]="c.id">
+                          {{c.name}}
+                        </mat-option>
+                      </mat-select>  
+                </mat-form-field>
+
+
+                </div>  
+
+              <div fxLayout="row" fxFlex="1 0 auto">
+
+                  <mat-form-field class="Input" fxFlex="46" >
+                        <mat-icon style='color:cadetblue'  matSuffix>place</mat-icon>
+                      <textarea  matInput formControlName="address"  placeholder="{{'SAMPLE.ADDRESS' | translate}}" 
+                      name="address"
+                      required [errorStateMatcher]="matcher">
+                      </textarea>
+                      <mat-error *ngIf="form.get('address').hasError('required')">
+                              {{'SAMPLE.ADDRESSREQUIRED' | translate}}
+                      </mat-error>
+                   </mat-form-field>
+
+                  <mat-form-field  class="Input" fxFlex="47">
+                        <mat-icon style='color:cadetblue'  matSuffix>place</mat-icon>
+                      <textarea  matInput formControlName="address2"  placeholder="{{'SAMPLE.ADDRESS2' | translate}}"
+                      name="address2"
+                     ></textarea>
+                  </mat-form-field>
+
+              </div>
+
+              <div fxLayout="row"  fxFlex="1 0 auto">
+                             <mat-checkbox style="margin-top:19px;" 
+                             class="Input" fxFlex="8"
+                             formControlName="notemail"
+                    >
+                      Sin Email
+                  </mat-checkbox>
+              
+                  <mat-form-field class="Input" fxFlex="34" >
+                                <mat-icon style='color:cadetblue' matSuffix>mail</mat-icon>
+                      <input formControlName="email"   matInput placeholder="{{'SAMPLE.EMAIL' | translate}} " 
+                             name="email"
+                             [errorStateMatcher]="matcher" >
+                      <mat-error *ngIf="form.get('email').hasError('email')">
+                              {{'SAMPLE.EMAILVALIDATE' | translate}} 
+                      </mat-error> 
+                   
+                  </mat-form-field>
+                
+                    <mat-form-field class="Input" fxFlex="30" >
+                                  <mat-icon style='color:cadetblue' matSuffix>mail</mat-icon>
+                        <input formControlName="email"   matInput placeholder="{{'SAMPLE.EMAIL' | translate}} " 
+                               name="email"
+                               [errorStateMatcher]="matcher" >
+                        <mat-error *ngIf="form.get('email2').hasError('email')">
+                                {{'SAMPLE.EMAILVALIDATE' | translate}} 
+                        </mat-error> 
+                     
+                    </mat-form-field>
+
+      
+                          <mat-form-field class="Input" fxFlex="15" >
+                            <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+                            <input matInput  formControlName="telephonemovile"  placeholder="{{'SAMPLE.TELEPHONEMOVILE' | translate}}" 
+                               name="telephonemovile"
+                                required [errorStateMatcher]="matcher">
+                               <mat-error *ngIf="form.get('telephonemovile').hasError('required')">
+                                    {{'SAMPLE.TELEPHONEREQUIRED' | translate}}
+                               </mat-error>
+                             <mat-error *ngIf="!form.get('telephonemovile').hasError('minlenght')">
+                                  {{'SAMPLE.TELEPHONEINVALID' | translate}}
+                             </mat-error>
+                             <mat-error *ngIf="!form.get('telephonemovile').hasError('maxlenght')">
+                                  {{'SAMPLE.TELEPHONEINVALID' | translate}}
+                             </mat-error>
+                 
+                        </mat-form-field>
+                      </div> 
+                          <div fxLayout="row" fxFlex="1 0 auto">
+                
+                          <mat-form-field class="Input" fxFlex="21">
+                              <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+                            <input formControlName="telephonework"  matInput placeholder="{{'SAMPLE.TELEPHONEWORK' | translate}}" 
+                            name="telephonework"
+                         
+                                    >
+                        </mat-form-field>
+                        
+                                   <mat-form-field class="Input" fxFlex="21">
+                                          <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+                                          <input matInput formControlName="telephonehouse" placeholder="{{'SAMPLE.TELEPHONEHOME' | translate}}" 
+                                           name="telephonehouse"
+                                  >
+                                  </mat-form-field>
+                              
+                           </div>    
+
+   </form>
+  

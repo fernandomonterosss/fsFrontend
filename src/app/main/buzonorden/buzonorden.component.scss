@@ -1,0 +1,138 @@
+
+.container{
+  max-width: 100%;
+  margin-left:1%;
+  margin-right:1%;
+  background-color:transparent;
+  max-height: 60%;
+  display: flex;
+  flex-direction: column;
+}
+ 
+ .mat-table {
+  overflow: auto;
+ }
+ 
+ .matpaginators{
+     max-width:100%;
+     float: left;
+     display:block;
+     background:transparent;
+ }
+ 
+ .pointer {
+     cursor: pointer;
+ }
+ 
+ .md-button-right .button-group {
+     position: absolute;
+     right: 0;
+     margin: 0;
+   }
+   
+   .mytitle{
+     font-family: 'Times New Roman';
+     font-size: 15px;
+     color: black;
+   }
+ 
+   
+   .myrow{
+    border-bottom: 1px solid black;
+    width: 150%;
+  }
+
+ .xmySelectedPanel {
+    background: linear-gradient(to right, #d3cce3, #e9e4f0) !important;
+    border-bottom: 1px solid black;
+    // width: 150%;
+     font-family: 'Times New Roman';
+     min-width:150%;
+ }
+ 
+ .viewDetail{
+     cursor: pointer;
+  }
+ 
+ 
+ .mat-row:hover {
+
+   background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  // background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+ }
+  
+ .mat-cell:hover {
+     color: white !important;
+ }
+
+ .mat-header-cell{
+  color:black;    
+  font-size: 1em;
+}
+
+ 
+ .highlight{
+     color:black !important;
+ }
+   
+   .loading-indicator {
+     position: fixed;
+     z-index: 999;
+     height: 2em;
+     width: 2em;
+     overflow: show;
+     margin: auto;
+     top: 0;
+     left: 0;
+     bottom: 0;
+     right: 0;
+   }
+ 
+ 
+
+   .mat-column-id,.mat-column-code,.mat-column-fecha_recepcion,.mat-column-estado,
+   .mat-column-mantenimientos{
+      max-width: 100px; 
+   }
+
+   .mat-column-lastName,.mat-column-email,.mat-column-telephonemovile,.mat-column-observaciones
+   ,.mat-columns-servicio{
+      //flex: 0 0 200px !important;
+      max-width: 200px ;
+  }
+   
+
+   .mobile-label {
+     display: none;
+   }
+ 
+   @media(max-width: 600px) {
+     
+      .mobile-label {
+       width: 80px;
+       display: inline-block;
+       font-weight: bold;
+       align-items: start;
+     }
+   
+     .mat-header-row {
+       display: none;
+     }
+   
+      .mat-column-id,.mat-column-code,.mat-column-fecha_recepcion
+      ,.mat-column-lastName,.mat-column-email,.mat-column-telephonemovile,.mat-column-observaciones
+      ,.mat-column-estado{
+       max-height: 8px !important;
+       max-width: none;
+       width: none;
+       //align-items: left !important;    
+     }
+     
+     .mat-row { 
+       flex-direction: column;
+       align-items: start;  
+       left:0; 
+       padding: 8px 24px;
+   
+      }
+   }

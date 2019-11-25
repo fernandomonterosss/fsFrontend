@@ -1,0 +1,76 @@
+
+/* You can add global styles to this file, and also import other style files */
+/* NgxSmartModal variables override */
+$color-overlay: rgba(0, 0, 0, .7);
+$dialog-position-right: 50%;
+
+
+
+
+
+// Import Fuse core library
+@import "@fuse/scss/core";
+@import "~ngx-smart-modal/ngx-smart-modal";
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// @ Multiple material themes example
+// -----------------------------------------------------------------------------------------------------
+
+// Define the Material palettes
+$yellow-theme-primary: mat-palette($mat-fusedark);
+$yellow-theme-accent: mat-palette($mat-yellow, 600, 400, 700);
+$yellow-theme-warn: mat-palette($mat-red);
+
+// Create the Material theme object
+$yellow-theme: mat-light-theme($yellow-theme-primary, $yellow-theme-accent, $yellow-theme-warn);
+
+// Add ".yellow-theme" class to the body to activate this theme
+.yellow-theme {
+
+    // Generate the Angular Material theme
+    @include angular-material-theme($yellow-theme);
+
+    // Generate the fuse color classes with the new colors...
+    @include generateFuseColorClasses($yellow-theme-primary, $yellow-theme-accent, $yellow-theme-warn);
+}
+
+
+
+.matnavapp{
+    background: #F0F2F0;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-size: 15px;
+    color:white;
+    font-family: 'Times New Roman';
+}
+
+.matnav{
+    background: #F0F2F0;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
+}
+
+
+
+.mattable{
+    background: linear-gradient(to right, #d3cce3, #e9e4f0);
+    width: 100%;
+    font-size: 15px;
+    color:black;
+    font-family: 'Times New Roman';
+}
+
+.matpaginator{
+    max-width:500px;
+    float: right;
+    background:transparent;
+}
+
+

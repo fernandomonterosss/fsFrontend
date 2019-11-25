@@ -1,0 +1,30 @@
+<mat-card class="mySelectedPanel">
+<div mat-dialog-content >
+
+<div  class="container" fxLayout="row">
+    <div fxFlex="20%"> <p>Codigo: {{data.code}} </p></div>
+    <div fxFlex="80%"><p>Nombre: {{data.firstName}} {{data.lastName}}</p></div>
+</div>
+<div  class="container" fxLayout="row">
+<div fxFlex="100%"><p>Direccion: {{data.address}}</p></div>
+</div>
+
+<div  class="container" fxLayout="row">
+    <div fxFlex="100%"><p>Direccion: {{data.address2}}</p></div>
+  </div>   
+  <div  class="container" fxLayout="row">
+      <div fxFlex="35%"><p>Nit: {{data.nit}}</p></div>
+      <div fxFlex="50%"><p>Dpi: {{data.dpi}}</p></div>
+  </div> 
+ <div  class="container" fxLayout="row">
+   <div fxFlex="35%">Tel.Casa:{{data.telephonehouse}}</div>
+   <div fxFlex="35%">Tel.Movile: {{data.telephonemovile}}</div>
+   <div fxFlex="30%">Tel.Trabajo: {{data.telephonework}}</div>
+</div>
+ 
+</div>
+
+<div style="background: linear-gradient(to right, #f0f2f0, #000c40);" mat-dialog-actions align="center">
+  <button mat-button (click)="onNoClick($event)">Cerrar</button>
+ </div>
+</mat-card>

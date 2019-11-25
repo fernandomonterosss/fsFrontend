@@ -1,0 +1,849 @@
+<div id="forms" class="page-layout simple fullwidth" fxLayout="column">
+    <mat-toolbar class="matnavapp">
+        
+           <button mat-icon-button matTooltip="Regresar Anterior" (click)="BtnRegresar()" type="button"><mat-icon>arrow_back_ios</mat-icon></button> 
+           <button mat-icon-button matTooltip="Guardar Nuevo Serticio Tecnico" name="btnguardar"  form="CreateForm" type="submit"> <mat-icon>save</mat-icon> </button>
+           <button mat-icon-button matTooltip="Agregar Repuesto" (click)="openDialog()"  type="button"><mat-icon>note_add</mat-icon></button>
+           <button mat-icon-button matTooltip="Calculo 0H" (click)="calculo()"  type="button"><mat-icon>dialpad</mat-icon></button>
+           <button mat-icon-button matTooltip="Calculo 24H" (click)="calculo2()"  type="button"><mat-icon>dialpad</mat-icon></button>
+          
+           <div class="md-button-right ">   
+               <button md-button class="card-container button-group mytitle"> Orden: {{this.orden}} [Actualiza Orden  Tecnico]</button>
+           </div>
+    </mat-toolbar> 
+
+    
+   
+        <form  novalidate id="CreateForm" (ngSubmit)="Guardar($event)"  #formDirective="ngForm" 
+        [formGroup]="form"    fxLayout="column" fxLayoutAlign="start"
+                fxFlex="1 0 auto" name="form" >
+
+        <mat-tab-group (selectedTabChange)="onLinkClick($event)">
+
+        <mat-tab  [disabled]="botondisable" style="background-color: #3700b3"  class="mattabgroup">
+           <ng-template mat-tab-label>
+                <mat-icon>assignment</mat-icon>
+               <span>Datos</span>
+            </ng-template>
+
+
+<!--            <form  novalidate id="CreateForm" (ngSubmit)="Guardar($event)"  #formDirective="ngForm" 
+            [formGroup]="form"    fxLayout="column" fxLayoutAlign="start"
+                    fxFlex="1 0 auto" name="form" >-->
+            <div class="container" style="margin-bottom:30px" fxL ayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%">
+
+            <mat-form-field class="Input" fxFlex="100%" >
+            <mat-icon style='color:cadetblue'  matSuffix>place</mat-icon>
+            <textarea  matInput rows="3" formControlName="observacionestecnico"  placeholder="{{'observaciones' | translate}}" 
+            >
+            </textarea>
+            </mat-form-field> 
+            </div>
+   
+            <!--   </form>  -->
+    
+            <mat-table #table [dataSource]="dataSource" matSort matSortActive="id"
+             matSortDirection="asc" matSortDisableClear>
+
+        
+             <ng-container matColumnDef="orden">
+             <mat-header-cell  mat-sort-header  *matHeaderCellDef >orden </mat-header-cell>
+             <mat-cell *matCellDef="let element">  <span class="mobile-label">orden</span> {{element.orden}} </mat-cell> 
+              </ng-container>
+
+             <ng-container matColumnDef="id">
+                <mat-header-cell  mat-sort-header  *matHeaderCellDef >ID </mat-header-cell>
+                 <mat-cell *matCellDef="let element">  <span class="mobile-label">ID</span> {{element.id}} </mat-cell> 
+            </ng-container>
+
+           <ng-container matColumnDef="pieza">
+             <mat-header-cell  mat-sort-header  *matHeaderCellDef >Pieza </mat-header-cell>
+             <mat-cell *matCellDef="let element">  <span class="mobile-label">PIEZA</span> {{element.pieza}} </mat-cell> 
+          </ng-container>
+
+        <!-- Position Column -->
+          <ng-container matColumnDef="cantidad">
+              <mat-header-cell  mat-sort-header  *matHeaderCellDef >Cantidad</mat-header-cell>
+             <mat-cell *matCellDef="let element"> 
+                <span class="mobile-label">Cantidad</span>
+              {{element.cantidad}} </mat-cell>
+           </ng-container>
+
+           <ng-container matColumnDef="estado" >
+              <mat-header-cell  *matHeaderCellDef>Estado Repuesto</mat-header-cell>
+                  <mat-cell *matCellDef="let element" >
+                  <span class="mobile-label">Estado Repuesto</span>
+                 <mat-form-field>
+                      <mat-select  disabled style="min-width: 200px;" placeholder=""  [value]="element.estado">
+                        <mat-option>''</mat-option>
+                        <mat-option   *ngFor="let est of estadoRepuesto"  [value]="est.id">
+                               {{est.name}} 
+                      </mat-option>
+                      </mat-select>
+                     </mat-form-field>
+                     </mat-cell>
+          </ng-container> 
+        <ng-container matColumnDef="descripcion">
+            <mat-header-cell  mat-sort-header   *matHeaderCellDef >Descripcion</mat-header-cell>
+            <mat-cell *matCellDef="let element"> 
+                <span class="mobile-label">Descripcion</span> 
+              {{element.descripcion}} </mat-cell>
+           </ng-container>
+
+           <ng-container matColumnDef="mantenimientos">
+            <mat-header-cell *matHeaderCellDef> Recepcion</mat-header-cell>
+            <mat-cell *matCellDef="let element" >
+                <span class="mobile-label">Recepcion</span>
+                  <a  (click)="Eliminar(element.id,element.orden)"  matTooltip="Enviar Orden" style="color:black" class = "icon material-icons md-36  pointer"
+                 >delete</a>
+                 <a  (click)="Actualiza(element.id,element.orden,element.pieza,element.cantidad,element.descripcion)"  matTooltip="Enviar Orden" style="color:black" class = "icon material-icons md-36  pointer"
+                 >edit</a>
+            </mat-cell>  
+          </ng-container>
+
+           <mat-header-row class="xmySelectedPanel" *matHeaderRowDef="displayedColumns"></mat-header-row>
+           <mat-row class="my_mat_row" *matRowDef="let row; columns: displayedColumns;"></mat-row>            
+      </mat-table>
+   
+    </mat-tab> 
+    
+    <mat-tab  [disabled]="habilitaTab" class="mattabgroup">
+        <ng-template mat-tab-label>
+           <em style="color:black">Detalle Orden</em>
+         </ng-template>
+         <div  class="rowcolor" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+             
+               <mat-form-field  class="matinput" fxFlex="5" >
+                 <input  formControlName="orden" matInput placeholder="{{'orden.orden' | translate}}" 
+                 type="number">
+               </mat-form-field>
+
+               <mat-form-field class="matinput" fxFlex="20">
+                 <input  formControlName="fecha_recepcion" matInput [matDatepicker]="fecha_recepcion" placeholder="{{'orden.fecha_recepcion' | translate}}" >
+                 <mat-datepicker #fecha_recepcion></mat-datepicker>
+               </mat-form-field>
+           
+               <mat-form-field  class="matinput" fxFlex="50" >
+                   <input  formControlName="responsable" matInput placeholder="{{'orden.responsable' | translate}}" 
+                   type="string"
+                   >
+               </mat-form-field>
+
+             
+               <mat-form-field class="matinput" fxFlex="20">
+               <mat-select 
+                panelClass="mySelectedPanel"
+                formControlName="estado" 
+                placeholder="{{'orden.estado' | translate}}">
+                  <mat-option  *ngFor="let est of estadoOrden"
+                   [value]="est.id">
+                   {{est.name}}
+                   </mat-option>
+               </mat-select>
+               </mat-form-field>
+
+               <mat-form-field class="matinput" fxFlex="20">
+                   <mat-select 
+                   panelClass="mySelectedPanel"
+                   formControlName="tienda"
+                   placeholder="{{'orden.tienda' | translate}}">
+                   <mat-option  *ngFor="let est of tienda"
+                       [value]="est.id">
+                       {{est.name}}
+                   </mat-option>
+                   </mat-select>
+               </mat-form-field>
+
+     
+           </div>
+           <div  class="rowcolor" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+        
+            <mat-form-field class="matinput" fxFlex="20">
+                <mat-select 
+                panelClass="mySelectedPanel"
+                formControlName="categoria" 
+                placeholder="{{'orden.categoria' | translate}}">
+                <mat-option  *ngFor="let est of categoria"
+                [value]="est.id">
+                {{est.name}}
+                </mat-option>
+                </mat-select>
+                </mat-form-field>
+      
+        
+                <mat-form-field class="matinput" fxFlex="20">
+                    <mat-select 
+                    panelClass="mySelectedPanel"
+                    formControlName="marca" 
+                    placeholder="{{'orden.marca' | translate}}">
+                    <mat-option  *ngFor="let est of marcaOrden"
+                    [value]="est.id">
+                    {{est.name}}
+                    </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+
+
+                <mat-form-field class="matinput" fxFlex="33">
+                <input formControlName="modelo" matInput placeholder="{{'orden.modelo' | translate}}" 
+                    type="text">
+                </mat-form-field>
+
+                <mat-form-field class="matinput" fxFlex="20">
+                    <mat-select 
+                    panelClass="mySelectedPanel"
+                    formControlName="material" 
+                    placeholder="{{'orden.material' | translate}}">
+                    <mat-option  *ngFor="let est of material"
+                    [value]="est.id">
+                    {{est.name}}
+                    </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+
+                </div>
+                <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+               
+                      <mat-form-field class="matinput" fxFlex="20">
+                      <mat-select 
+                      panelClass="mySelectedPanel"
+                      formControlName="ubicacion" 
+                      placeholder="{{'orden.ubicacion' | translate}}">
+                      <mat-option  *ngFor="let est of ubicacion"
+                      [value]="est.id">
+                      {{est.name}}
+                      </mat-option>
+                      </mat-select>
+                      </mat-form-field>
+  
+               
+               
+   
+                      <mat-form-field class="matinput" fxFlex="20">
+                        <mat-select 
+                        panelClass="mySelectedPanel"
+                        formControlName="tamano" 
+                        placeholder="{{'orden.tamano' | translate}}">
+                        <mat-option  *ngFor="let est of tamano"
+                        [value]="est.id">
+                        {{est.name}}
+                        </mat-option>
+                        </mat-select>
+                        </mat-form-field>
+           
+              
+                        <mat-form-field class="matinput" fxFlex="20">
+                            <mat-select 
+                            panelClass="mySelectedPanel"
+                            formControlName="pulsera" 
+                            placeholder="{{'orden.pulsera' | translate}}">
+                            <mat-option  *ngFor="let est of bracelet"
+                            [value]="est.id">
+                            {{est.name}}
+                            </mat-option>
+                            </mat-select>
+                            </mat-form-field>
+               
+
+
+                <mat-form-field class="matinput" fxFlex="20">
+                 <input formControlName="eslabones" matInput placeholder="{{'orden.eslabones' | translate}}" 
+                        type="number">
+                </mat-form-field>
+         </div>
+
+         <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+
+             <mat-form-field class="matinput" fxFlex="100%">
+                 <input formControlName="servicio" matInput placeholder="{{'orden.servicio' | translate}}" 
+                        type="text"
+                        required>
+                       
+              </mat-form-field>
+
+             </div> 
+
+                 <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                 <mat-form-field class="matinput" fxFlex="100%">
+                     <input formControlName="observaciones" matInput placeholder="{{'orden.observaciones' | translate}}" 
+                            type="text">
+                  </mat-form-field>
+             </div> 
+
+
+        
+   </mat-tab>
+
+            <mat-tab  [disabled]="habilitaTab" class="mattabgroup">
+                    <ng-template mat-tab-label>
+                                            <em style="color:balck">Fotos</em>
+                  </ng-template>
+                  <div class="container" style="margin-left:10px"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%">
+                       
+                    <div style="text-align:center">
+                        <h1>
+                          Camara 
+                       </h1>
+                     <div></div>
+                       <div style="text-align:left">
+                      
+                       
+                          <webcam [height]="450" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+                                  [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+                                  [videoOptions]="videoOptions"
+                                  (cameraSwitched)="cameraWasSwitched($event)"
+                                  (initError)="handleInitError($event)"
+                          ></webcam>
+                          <br/>
+                          <div style="text-align:center">
+                            <button type="button" style="margin-top:5px; align-self: center" mat-flat-button color="accent" (click)="triggerSnapshot();" >Tomar Foto</button>
+                          </div>
+                       
+                     </div>
+                   
+                     </div>
+                     <div >
+                      <ul>
+                          <li *ngFor="let c of captures" (click)="onSelect(c)">
+                               <img src="{{ c.foto }}" width="190" height="200"  align="middle" style="margin-right:3px; margin-top:3px;" />
+                              <a  (click)="eliminaImagen()"  matTooltip="Eliminar Fotografia" style="color:black" class = "icon material-icons md-36  pointer"
+                              >cancel</a>
+                           </li>
+                      </ul>  
+                        </div>
+                      </div>
+                                       
+                </mat-tab>
+                <mat-tab [disabled]="habilitaTab" class="mattabgroup">
+                  <ng-template mat-tab-label>
+                                          <em style="color:balck">Control de Reglaje</em>
+                  </ng-template>
+                
+                 <!--   <form  novalidate id="CreateForm" (ngSubmit)="Guardar($event)"  #formDirective="ngForm" 
+                  [formGroup]="form1"    fxLayout="column" fxLayoutAlign="start"
+                          fxFlex="1 0 auto" name="form" >-->
+
+                             <div class="container" style="margin-left:10px; margin-top:10px;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxFlex="100">
+
+                                    <div class="container" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxFlex="50">
+                                               <div style="padding-left: 10px; padding-top: 10px" >
+                                                    <p> Relojero: {{user}} <br>
+                                                    Orden:    {{orden}}  <br>
+                                                    Serie:    {{serie}} <br></p>
+                                               </div>
+                                     </div>
+
+                                    <div class="container" style="margin-left:10px; border-style: solid; border-color: blue;"   fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxFlex="50">
+                                                <div style="padding-left: 10px; padding-top: 10px"> 
+                                                    <p> Calibre:      {{calibre}}<br>
+                                                    Movimiento:       {{movimiento}}<br>
+                                                    Modelo:           {{modelo}}<br></p>
+                                                </div>
+                                     </div>
+                              </div>
+
+                              
+                              <div id="container" fxLayout="row"  >
+                                   <div id="container2" fxLayout="column">
+                                   <div class="card" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                           
+                                           <div fxFlex="10"><h5>1ra</h5> </div>      
+
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="posicion1" matInput placeholder="poisicion" 
+                                            type="number">
+                                            </mat-form-field>
+                            
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="linea1" matInput placeholder="linea" 
+                                            type="number">
+                                            </mat-form-field>
+                              
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="oh1" matInput placeholder="oh" 
+                                            type="number">
+                                            </mat-form-field>
+                                              
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="amplitud1" matInput placeholder="amplitud" 
+                                            type="number">
+                                            </mat-form-field>
+                                    </div>
+
+                                     <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                        <div fxFlex="10"><h5>2da</h5> </div>                               
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="posicion2" matInput placeholder="poisicion" 
+                                            type="number">
+                                            </mat-form-field>
+                            
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="linea2" matInput placeholder="linea" 
+                                            type="number">
+                                            </mat-form-field>
+                              
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="oh2" matInput placeholder="oh" 
+                                            type="number">
+                                            </mat-form-field>
+                                              
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                            <input formControlName="amplitud2" matInput placeholder="amplitud" 
+                                            type="number">
+                                            </mat-form-field>
+                      
+                                       </div>
+
+                                       
+                                      <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                          <div fxFlex="10"><h5>3ra</h5> </div>                              
+                                          <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="posicion3" matInput placeholder="poisicion" 
+                                              type="number">
+                                              </mat-form-field>
+                              
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="linea3" matInput placeholder="linea" 
+                                              type="number">
+                                              </mat-form-field>
+                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="oh3" matInput placeholder="oh" 
+                                              type="number">
+                                              </mat-form-field>
+                                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="amplitud3" matInput placeholder="amplitud" 
+                                              type="number">
+                                              </mat-form-field>
+                        
+                                         </div>
+                                         
+                                      <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                          <div fxFlex="10"><h5>4ta</h5> </div>                                 
+                                          <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="posicion4" matInput placeholder="poisicion" 
+                                              type="number">
+                                              </mat-form-field>
+                              
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="linea4" matInput placeholder="linea" 
+                                              type="number">
+                                              </mat-form-field>
+                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="oh4" matInput placeholder="oh" 
+                                              type="number">
+                                              </mat-form-field>
+                                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="amplitud4" matInput placeholder="amplitud" 
+                                              type="number">
+                                              </mat-form-field>
+                        
+                                         </div>
+                                         
+                                      <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                          <div fxFlex="10"><h5>5ta</h5> </div>                                    
+                                          <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="posicion5" matInput placeholder="poisicion" 
+                                              type="number">
+                                              </mat-form-field>
+                              
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="linea5" matInput placeholder="linea" 
+                                              type="number">
+                                              </mat-form-field>
+                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="oh5" matInput placeholder="oh" 
+                                              type="number">
+                                              </mat-form-field>
+                                                
+                                              <mat-form-field class="matinput" fxFlex="20">
+                                              <input formControlName="amplitud5" matInput placeholder="amplitud" 
+                                              type="number">
+                                              </mat-form-field>
+                        
+                                         </div>
+                                         <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                            <div fxFlex="50" ><h5>Valor Absoluto 0h</h5> </div>
+                                            <mat-form-field class="matinput" fxFlex="20">
+                                                <input formControlName="promedio" matInput
+                                                type="number">
+                                          </mat-form-field>
+          
+                                           </div>
+                                  </div>
+                                  <div id="container2" fxLayout="column">
+                                      <div class="card" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                      <div fxFlex="10"><h5>1ra</h5> </div>      
+
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="posicion6" matInput placeholder="poisicion" 
+                                      type="number">
+                                      </mat-form-field>
+                      
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="linea6" matInput placeholder="linea" 
+                                      type="number">
+                                      </mat-form-field>
+                        
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="oh6" matInput placeholder="24h" 
+                                      type="number">
+                                      </mat-form-field>
+                                        
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="amplitud6" matInput placeholder="amplitud" 
+                                      type="number">
+                                      </mat-form-field>
+                                   </div>
+
+                               <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutGap="0.5%" >
+                                  <div fxFlex="10"><h5>2da</h5> </div>                               
+                                  <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="posicion7" matInput placeholder="poisicion" 
+                                      type="number">
+                                      </mat-form-field>
+                      
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="linea7" matInput placeholder="linea" 
+                                      type="number">
+                                      </mat-form-field>
+                        
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="oh7" matInput placeholder="24h" 
+                                      type="number">
+                                      </mat-form-field>
+                                        
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                      <input formControlName="amplitud7" matInput placeholder="amplitud" 
+                                      type="number">
+                                      </mat-form-field>
+                
+                                 </div>
+
+                                 
+                                <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                    <div fxFlex="10"><h5>3ra</h5> </div>                              
+                                    <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="posicion8" matInput placeholder="poisicion" 
+                                        type="number">
+                                        </mat-form-field>
+                        
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="linea8" matInput placeholder="linea" 
+                                        type="number">
+                                        </mat-form-field>
+                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="oh8" matInput placeholder="24h" 
+                                        type="number">
+                                        </mat-form-field>
+                                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="amplitud8" matInput placeholder="amplitud" 
+                                        type="number">
+                                        </mat-form-field>
+                  
+                                   </div>
+                                   
+                                <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                    <div fxFlex="10"><h5>4ta</h5> </div>                                 
+                                    <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="posicion9" matInput placeholder="poisicion" 
+                                        type="number">
+                                        </mat-form-field>
+                        
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="linea9" matInput placeholder="linea" 
+                                        type="number">
+                                        </mat-form-field>
+                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="oh9" matInput placeholder="24h" 
+                                        type="number">
+                                        </mat-form-field>
+                                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="amplitud9" matInput placeholder="amplitud" 
+                                        type="number">
+                                        </mat-form-field>
+                  
+                                   </div>
+                                   
+                                <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                    <div fxFlex="10"><h5>5ta</h5> </div>                                    
+                                    <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="posicion10" matInput placeholder="poisicion" 
+                                        type="number">
+                                        </mat-form-field>
+                        
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="linea10" matInput placeholder="linea" 
+                                        type="number">
+                                        </mat-form-field>
+                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="oh10" matInput placeholder="24h" 
+                                        type="number">
+                                        </mat-form-field>
+                                          
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="amplitud10" matInput placeholder="amplitud" 
+                                        type="number">
+                                        </mat-form-field>
+                                  </div>
+                                  <div class="card" style="border-style: solid; border-color: blue;"  fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" >
+                                      <div fxFlex="50" ><h5>Valor Absoluto 24h</h5> </div>
+                                      <mat-form-field class="matinput" fxFlex="20">
+                                          <input formControlName="promedio_1" matInput 
+                                          type="number">
+                                    </mat-form-field>
+    
+                                     </div>   
+                                  </div>
+                                  <div id="container2" fxLayout="column">
+                                      <div class="card" style="border-style: solid; border-color:red;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                    
+                                              <div fxFlex="20"><h5>1er.Criterio</h5> </div>      
+   
+                                               <mat-form-field class="matinput" fxFlex="20">
+                                               <input formControlName="promedio1" matInput placeholder="Valor" 
+                                               type="number">
+                                               </mat-form-field>
+                               
+                                               <mat-form-field class="matinput" fxFlex="40">
+                                               <input formControlName="texto1" matInput placeholder="Texto" 
+                                                type="texto">
+                                               </mat-form-field>
+                                       </div>
+                                      
+                                       <div class="card" style="border-style: solid; border-color:red;"  fxLayout.xs="column" fxLayoutWrapfxLayoutGap="0.5%" >
+                                              
+                                          <div fxFlex="20"><h5>2do.Criterio</h5> </div>      
+
+                                           <mat-form-field class="matinput" fxFlex="20">
+                                           <input formControlName="promedio2" matInput placeholder="Valor" 
+                                           type="number">
+                                           </mat-form-field>
+                           
+                                           <mat-form-field class="matinput" fxFlex="40">
+                                           <input formControlName="texto2" matInput placeholder="Texto" 
+                                            type="text">
+                                           </mat-form-field>
+                                      </div>
+
+                                      <div class="card" style="border-style: solid; border-color:red;"  fxLayout.xs="column" fxLayoutWrapfxLayoutGap="0.5%" >
+                                              
+                                         <div fxFlex="35"><h5>Marcha Diurna(2do criterio)</h5> </div>      
+
+                                         <mat-form-field class="matinput" fxFlex="22">
+                                         <input formControlName="marcha1" matInput placeholder="Valor" 
+                                         type="number">
+                                         </mat-form-field>
+                         
+                                         <mat-form-field class="matinput" fxFlex="22">
+                                         <input formControlName="marcha2" matInput placeholder="Valor" 
+                                          type="number">
+                                         </mat-form-field>
+                                         <div fxFlex="10"><h5>s24H</h5> </div>      
+
+                                    </div>
+                                    <div class="card" style="border-style: solid; border-color:red;"  fxLayout.xs="column" fxLayoutWrapfxLayoutGap="0.5%" >
+                                              
+                                        <div fxFlex="35"><h5>Reserva de Marcha</h5> </div>      
+
+                                        <mat-form-field class="matinput" fxFlex="22">
+                                        <input formControlName="reserva1" matInput placeholder="Valor" 
+                                        type="number">
+                                        </mat-form-field>
+                        
+                                        <mat-form-field class="matinput" fxFlex="22">
+                                        <input formControlName="reserva2" matInput placeholder="Valor" 
+                                         type="number">
+                                        </mat-form-field>
+                                        <div fxFlex="10"><h5>H</h5> </div>      
+
+                                   </div>
+
+                                    </div>
+                                       
+                             </div>  
+
+                             <div id="_container" fxLayout="row" >
+                                <div id="container3" fxLayout="column">
+                                 <div class="cardz" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                               
+                                        <mat-form-field>
+                                        <input formControlName="fecha" matInput [matDatepicker]="datepicker" placeholder="dd/mm/yyyy" >
+                                        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #datepicker></mat-datepicker>
+                                        </mat-form-field>
+                         
+                                        <mat-form-field class="matinput" fxFlex="20">
+                                        <input formControlName="hora" [format]="24" matInput [ngxTimepicker]="timepicker">
+                                        <ngx-material-timepicker #timepicker></ngx-material-timepicker>
+                                        </mat-form-field>
+                           
+                                         <mat-form-field class="matinput" fxFlex="40">
+                                         <input disabled  matInput placeholder="CUERDA TOTAL" 
+                                         type="text">
+                                         </mat-form-field>
+                                           
+                                         <mat-form-field class="matinput" fxFlex="15">
+                                         <input formControlName="texto3" matInput placeholder="texto" 
+                                         type="text">
+                                         </mat-form-field>
+                                         
+                                         <mat-form-field class="matinput" fxFlex="15">
+                                         <input formControlName="texto_3" matInput placeholder="texto" 
+                                         type="text">
+                                         </mat-form-field>
+                                  </div>
+                                  <div class="cardz" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                        
+
+                                        <mat-form-field>
+                                         <input formControlName="fecha2" matInput [matDatepicker]="datepicker1" placeholder="dd/mm/yyyy" >
+                                         <mat-datepicker-toggle matSuffix [for]="datepicker1"></mat-datepicker-toggle>
+                                         <mat-datepicker #datepicker1></mat-datepicker>
+                                         </mat-form-field>
+                                 
+                                       <mat-form-field class="matinput" fxFlex="20">
+                                       <input formControlName="hora2" [format]="24" matInput [ngxTimepicker]="timepicker1">
+                                       <ngx-material-timepicker #timepicker1></ngx-material-timepicker>
+                                       </mat-form-field>
+                                   
+                           
+                                      <mat-form-field class="matinput" fxFlex="40">
+                                      <input disabled matInput placeholder="CORONA HACIA ABAJO" 
+                                      type="text">
+                                      </mat-form-field>
+                                        
+                                      <mat-form-field class="matinput" fxFlex="15">
+                                      <input formControlName="texto4" matInput placeholder="texto" 
+                                      type="text">
+                                      </mat-form-field>
+
+                                      <mat-form-field class="matinput" fxFlex="15">
+                                        <input formControlName="texto_4" matInput placeholder="texto" 
+                                        type="text">
+                                     </mat-form-field>
+                               </div>
+                               <div class="cardz" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                
+                                    
+                                       <mat-form-field>
+                                       <input formControlName="fecha3" matInput [matDatepicker]="datepicker2" placeholder="dd/mm/yyyy" >
+                                       <mat-datepicker-toggle matSuffix [for]="datepicker2"></mat-datepicker-toggle>
+                                       <mat-datepicker #datepicker2></mat-datepicker>
+                                       </mat-form-field>
+                                    
+                                       <mat-form-field class="matinput" fxFlex="20">
+                                       <input formControlName="hora3" [format]="24" matInput [ngxTimepicker]="timepicker2">
+                                       <ngx-material-timepicker #timepicker2></ngx-material-timepicker>
+                                       </mat-form-field>
+                                      
+                                 
+                                  <mat-form-field class="matinput" fxFlex="40">
+                                   <input disabled matInput placeholder="SIMULADOR" 
+                                   type="text">
+                                  </mat-form-field>
+                                    
+                                  <mat-form-field class="matinput" fxFlex="15">
+                                  <input formControlName="texto5" matInput placeholder="texto" 
+                                  type="text">
+                                  </mat-form-field>
+                                  <mat-form-field class="matinput" fxFlex="15">
+                                    <input formControlName="texto_5" matInput placeholder="texto" 
+                                    type="text">
+                                    </mat-form-field>
+  
+                           </div>
+                           <div class="cardz" style="border-style: solid; border-color: blue;"fxLayout.xs="column" fxLayoutGap="0.5%"  >
+                                <mat-form-field>
+                                <input formControlName="fecha4" matInput [matDatepicker]="datepicker3" placeholder="dd/mm/yyyy" >
+                                <mat-datepicker-toggle matSuffix [for]="datepicker3"></mat-datepicker-toggle>
+                                <mat-datepicker #datepicker3></mat-datepicker>
+                                </mat-form-field>
+                                
+                                <mat-form-field class="matinput" fxFlex="20">
+                                <input formControlName="hora4" [format]="24" matInput [ngxTimepicker]="timepicker3">
+                                <ngx-material-timepicker #timepicker3></ngx-material-timepicker>
+                                </mat-form-field>
+                                             
+                              <mat-form-field class="matinput" fxFlex="40">
+                              <input disabled matInput placeholder="RELOJ HACIA ARRIBA" 
+                              type="text">
+                              </mat-form-field>
+                                
+                              <mat-form-field class="matinput" fxFlex="15">
+                              <input formControlName="texto6" matInput placeholder="texto" 
+                              type="text">
+                              </mat-form-field>
+
+                              <mat-form-field class="matinput" fxFlex="15">
+                                <input formControlName="texto6" matInput placeholder="texto_" 
+                                type="text">
+                                </mat-form-field>
+
+                       </div>
+                                 </div>
+                               </div> 
+                         
+                     <!-- </form>-->   
+                </mat-tab>  
+           
+                <mat-tab [disabled]="habilitaTab" class="mattabgroup">
+                <ng-template mat-tab-label>
+                                        <em style="color:balck">Enviar Orden</em>
+                </ng-template>
+                <div class="container" style="margin-top:40px">
+                
+                   <mat-form-field class="Input" style="margin-right:5px;height: 100% " fxFlex="35%" >
+                   <input [ngModelOptions]="{standalone: true}"  [(ngModel)]  ="observatraslado" matInput   placeholder="{{'Observaciones' | translate}}">
+                   </mat-form-field> 
+
+                   
+                      <mat-form-field class="Input" style="margin-right:5px;height: 100% " fxFlex="20%">
+                           <mat-select  
+                            placeholder="Area"
+                            [ngModelOptions]="{standalone: true}"
+                            [ngModel]="area"
+                            (selectionChange)="onSelectionChanged($event)"
+                            disabled>
+                            <mat-option>Ninguno</mat-option>       
+                            <mat-option  *ngFor="let est of roles"
+                            [value]="est.id">
+                            {{est.name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                   <mat-form-field class="matinput" style="margin-right:5px" fxFlex="25%">
+                   <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="usrseleccionado" placeholder="{{'orden.tecnico' | translate}}"> 
+                   <mat-option>Ninguno</mat-option>       
+                   <mat-option   
+                           *ngFor="let c of rolUsuario"
+                           [value]="c.email">
+                           {{c.firstname}} {{c.lastname}}
+                   </mat-option>
+                   </mat-select>  
+                   </mat-form-field>
+        
+                    <button   [disabled]="botondisable" mat-raised-button class="boton"  style="margin-top:10px; "(click)="Actualizar()" >
+                          Trasladar Orden
+                    </button>
+   
+                  </div>
+               </mat-tab>
+               
+           
+            </mat-tab-group>     
+
+            
+         </form> 
+
+  </div>         

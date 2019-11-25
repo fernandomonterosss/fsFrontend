@@ -1,0 +1,119 @@
+.matpaginators{
+    position:fixed;    
+    background:transparent;
+    right:0;
+}
+
+.container{
+    max-width: 100%;
+    margin-left:1%;
+    margin-right:1%;
+    background-color:transparent;
+    max-height: 75%;
+    display: flex;
+    flex-direction: column;
+}
+.md-button-right .button-group {
+    position: absolute;
+    right: 0;
+    margin: 0;
+  }
+
+.mat-table {
+    overflow: auto;
+}
+  
+  .myrow{
+    border-bottom: 1px solid black;
+    width: 150%;
+  }
+
+ .xmySelectedPanel {
+     background: linear-gradient(to right, #d3cce3, #e9e4f0) !important;
+     border-bottom: 1px solid black;
+     width: 150%;
+     font-family: 'Times New Roman';
+ }
+
+ .mat-header-cell{
+     color:black;    
+    font-size: 1em;
+ }
+
+ .customWidthClass{
+    flex: 0 0 25px;
+ }
+
+
+ .pointer {
+    cursor: pointer;
+}
+
+.mat-column-mantenimientos,.mat-column-idtraslado,.mat-column-orden,.mat-column-fecharecibe,.mat-column-fechaenvia{
+    max-width: 100px;
+ 
+}
+
+
+.mat-column-usranterior,.mat-column-usrrecibe,.mat-column-usrenvia,.mat-column-usrenviac,.mat-column-servicio,.mat-column-comentarios,
+.mat-column-lastName,.mat-column-marca
+,.mat-column-modelo
+{   
+    max-width: 200px;
+}
+
+.mat-cell{
+    height: 5px !important;
+}
+
+.loading-indicator {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  .mat-row:hover {
+ 
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+   // background: -webkit-linear-gradient(top, rgba(206,220,231,1) 0%,rgba(89,106,114,1) 100%);
+  }
+   
+    .mobile-label {
+    display: none;
+  }
+  
+ 
+
+  @media(max-width: 600px) {
+    .mobile-label {
+        width: 80px;
+        display: inline-block;
+        font-weight: bold;
+        align-items: start;
+      }
+
+ .mat-column-orden,.mat-column-fecharecibe,.mat-column-usrenvia,.mat-column-usrenviac,.mat-column-servicio,.mat-column-comentarios,
+ .mat-column-mantenimientos,.mat-column-lastName,.mat-column-marca
+ ,.mat-column-modelo
+{   
+    max-width: none;
+    width:none;
+}
+
+    .mat-header-row {
+      display: none;
+    }
+  
+  .mat-row { 
+      flex-direction: column;
+      align-items: start;
+      padding: 8px 24px;
+      }
+  }

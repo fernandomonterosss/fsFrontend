@@ -1,0 +1,71 @@
+.bluepanel .mat-select-content {
+    background: rgba(52, 20, 197, 0.795);
+   
+  }
+  .highlight{
+    background: #42A948; /* green */
+  }
+
+  .loading-indicator {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .matnavapp{
+    background: #F0F2F0;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-size: 15px;
+    color:white;
+    font-family: 'Times New Roman';
+}
+
+  .Input{
+    margin-left: 20px;
+    margin-right: 20px;
+
+  }
+  .mySelectedPanel .mat-option {
+    font-family: 'Times New Roman';
+    font-size: 15px;
+    background: linear-gradient(to right, #d3cce3, #e9e4f0);
+    margin-left: 20px; 
+}
+
+
+.md-button-right .button-group {
+  position: absolute;
+  right: 0;
+  margin: 0;
+}
+
+.mytitle{
+  font-family: 'Times New Roman';
+  font-size: 15px;
+  color: black;
+  font-weight: bold;
+}
+
+  .rowcolor{
+    background:whitesmoke;
+  }
+
+  ::ng-deep .mat-form-field-underline {
+    display: none;
+}
+  .matnav2{
+    background: #F0F2F0;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-size: 15px;
+    color:black;
+    font-family: 'Times New Roman';
+}

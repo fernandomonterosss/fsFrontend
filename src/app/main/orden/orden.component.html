@@ -1,0 +1,620 @@
+ 
+
+<div id="form" class="page-layout simple fullwidth" fxLayout="column">
+    <mat-toolbar>
+        
+           <button mat-icon-button matTooltip="Regresar Anterior" (click)="BtnRegresar()" type="button"><mat-icon>arrow_back_ios</mat-icon></button> 
+           <button  *ngIf="desabilitaingreso" mat-icon-button matTooltip="Guardar Nueva Orden" name="btnguardar" form="CreateForm" [disabled]="form.invalid" type="submit"> <mat-icon>save</mat-icon> </button>
+        
+       <!--    <button mat-icon-button matTooltip="Limpiar Forma" (click)="resetForm(formDirective);" type="button"><mat-icon>clear_all</mat-icon></button> 
+       -->
+           <button  *ngIf="desabilitaingreso" mat-icon-button matTooltip="Actualizar Cliente" (click)="Actualizar()" [disabled]="buttonactDisabled" type="button"><mat-icon>edit</mat-icon></button>
+           <button mat-icon-button matTooltip="Enviar Comprobante" (click)="EnviarCorreo()"  [disabled]="buttonDisabled" type="button"><mat-icon>email</mat-icon></button>
+           <button mat-icon-button matTooltip="Enviar Mensaje Texto"  (click)="enviarMensajeTexto()"   type="button"><mat-icon>textsms</mat-icon></button>
+           <button mat-icon-button matTooltip="Enviar Mensaje WhatsApp"  (click)="enviarMensajeWhatsApp()"   type="button"><mat-icon>chat</mat-icon></button>
+           <button mat-icon-button matTooltip="Imprimir Comprobante"  (click)="ticketInterno()" [disabled]="buttonDisabled"  type="button"><mat-icon>print</mat-icon></button>
+           <button mat-icon-button matTooltip="Imprimir Comprobante Cliente"  (click)="ticketCliente()"  [disabled]="buttonDisabled"   type="button"><mat-icon>receipt</mat-icon></button>
+           <button mat-icon-button matTooltip="prueba"  (click)="imprimirTicketInterno()"   type="button"><mat-icon>print</mat-icon></button>
+           
+          <!--   <button mat-icon-button matTooltip="Pdf Interno"  (click)="print2()"  [disabled]="buttonDisabled"   type="button"><mat-icon>picture_as_pdf</mat-icon></button>
+           <button mat-icon-button matTooltip="Pdf Cliente"  (click)="print()"  [disabled]="buttonDisabled"   type="button"><mat-icon>picture_as_pdf</mat-icon></button>
+         -->
+           <div class="md-button-right ">
+            <button md-button class=" mytitle card-container button-group mytitle"> [ RECEPCION DE ORDEN ] {{this.orden.fecha_recepcion | date:'dd MM yyyy'}} |  Codigo : {{idtraslado}} | Cliente : {{nombre}} &nbsp;&nbsp;   </button>
+           </div>         
+    </mat-toolbar>
+      
+    <ngx-smart-modal  #myModal identifier="myModal" customClass="dailogposition">
+         <header>FSRICHARD</header>
+         <div *ngIf="myModal.hasData()">
+          <p  class="mat-h3"><mat-icon color="warn">done_all</mat-icon> Imprimir la Orden y Realizar Servicio Rapido</p>
+          <pre class="mat-h3"><mat-icon color="primary">replay_all</mat-icon> Imprimir la Orden y Enviar la Orden al Taller</pre>
+        </div>
+
+       
+     <div class="contenedor_btns_modal">
+                  <button  class=" contenido_btns_modal mdl-button mdl-js-button mdl-js-ripple-effect"  color="warn" mat-raised-button mat-icon-button matTooltip="Cancelar" (click)="myModal.close()" type="button"><mat-icon>close</mat-icon></button>
+                  <button class=" contenido_btns_modal mdl-button mdl-js-button mdl-js-ripple-effect" color="accent" mat-raised-button mat-icon-button matTooltip="Recepción Rapida" (click)="accionRapidaDialog()"  type="button"><mat-icon>done_all</mat-icon></button>
+                  <button class=" contenido_btns_modal mdl-button mdl-js-button mdl-js-ripple-effect" color="primary" mat-raised-button mat-icon-button matTooltip="Enviar a Taller" (click)="accionDialog()"   type="button"><mat-icon>replay_all</mat-icon></button>
+                </div>
+    </ngx-smart-modal>
+      
+
+        <mat-tab-group>
+    
+                <mat-tab style="background-color: #3700b3"  class="mattabgroup">
+                   <ng-template mat-tab-label>
+                        <mat-icon>assignment</mat-icon>
+                       <span>Datos de la Orden</span>
+                    </ng-template>
+
+                    
+                    <form  novalidate id="CreateForm" (ngSubmit)="guardar($event,'orden1')" #formDirective="ngForm" 
+                    [formGroup]="form" fxLayout="column" fxLayoutAlign="start"
+                        fxFlex="1 0 auto" name="form">
+
+        <mat-tab-group>
+             
+            <mat-tab [disabled]="flagenviado"  class="mattabgroup">
+             <ng-template mat-tab-label>
+                <em style="color:black">Detalle</em>
+              </ng-template>
+              <div  class="rowcolor" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                  
+                    <mat-form-field  class="matinput" fxFlex="5" >
+                      <input  formControlName="id" matInput placeholder="{{'orden.orden' | translate}}" 
+                      type="number">
+                    </mat-form-field>
+
+                    <mat-form-field class="matinput" fxFlex="20">
+                      <input  formControlName="fecha_recepcion" matInput [matDatepicker]="fecha_recepcion" placeholder="{{'orden.fecha_recepcion' | translate}}" >
+                      <mat-datepicker #fecha_recepcion></mat-datepicker>
+                    </mat-form-field>
+                
+                    <mat-form-field  class="matinput" fxFlex="50" >
+                        <input  formControlName="responsable" matInput placeholder="{{'orden.responsable' | translate}}" 
+                        type="string"
+                        >
+                    </mat-form-field>
+
+                  
+                    <mat-form-field class="matinput" fxFlex="20">
+                    <mat-select 
+                     panelClass="mySelectedPanel"
+                     formControlName="estado" 
+                     placeholder="{{'orden.estado' | translate}}">
+                       <mat-option  *ngFor="let est of estadoOrden"
+                        [value]="est.id">
+                        {{est.name}}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="matinput" fxFlex="20">
+                        <mat-select 
+                        panelClass="mySelectedPanel"
+                        formControlName="tienda"
+                        placeholder="{{'orden.tienda' | translate}}">
+                        <mat-option  *ngFor="let est of tienda"
+                            [value]="est.id">
+                            {{est.name}}
+                        </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                  
+          
+                </div>
+                <div  class="rowcolor" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+             
+                     <mat-form-field class="matinput" fxFlex="20">
+                     <mat-select formControlName='categoria' placeholder="{{'orden.categoria' | translate}}" 
+                     #singleSelectcategoria>
+                     <mat-select-search  [formControl]="categoriaFilterControl"> </mat-select-search>
+                     <mat-option   
+                        *ngFor="let c of filteredCategoria | async"
+                        [value]="c.id">
+                        {{c.name}}
+                     </mat-option>
+                     </mat-select>  
+                     </mat-form-field>
+           
+             
+                     <mat-form-field class="matinput" fxFlex="20">
+                     <mat-select formControlName="marca"  placeholder="{{'orden.marca' | translate}}" 
+                      #singleSelectcategoria>
+                     <mat-select-search  [formControl]="marcaFilterControl"> </mat-select-search>
+                     <mat-option   
+                        *ngFor="let c of filteredMarca | async"
+                        [value]="c.id">
+                        {{c.name}}
+                     </mat-option>
+                     </mat-select>
+                     <mat-error *ngIf="form.get('marca').hasError('required')">
+                        {{'orden.serviciorequerido' | translate}}
+                     </mat-error>
+                     </mat-form-field>
+
+                     <mat-form-field class="matinput" fxFlex="33">
+                     <input formControlName="modelo" matInput placeholder="{{'orden.modelo' | translate}}" 
+                         type="text">
+                     </mat-form-field>
+
+                     <mat-form-field class="Input" fxFlex="21">
+                     <mat-select formControlName="material" placeholder="{{'orden.material' | translate}}" 
+                     #singleSelectcategoria>
+                     <mat-select-search  [formControl]="materialFilterControl"> </mat-select-search>
+                     <mat-option   
+                       *ngFor="let c of filteredMaterial | async"
+                       [value]="c.id">
+                       {{c.name}}
+                     </mat-option>
+                     </mat-select>  
+                     </mat-form-field>
+
+                     </div>
+                     <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    
+                        <mat-form-field class="matinput" fxFlex="20">
+                            <mat-select 
+                             panelClass="mySelectedPanel"
+                             formControlName="ubicacion" 
+                             placeholder="{{'orden.ubicacion' | translate}}">
+                               <mat-option  *ngFor="let est of ubicacion"
+                                [value]="est.id">
+                                {{est.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+       
+                    
+                    
+                     <mat-form-field class="matinput" fxFlex="20">
+                     <mat-select formControlName="tamano" placeholder="{{'orden.tamano' | translate}}" 
+                      #singleSelectcategoria>
+                      <mat-select-search  [formControl]="tamanoFilterControl"> </mat-select-search>
+                      <mat-option   
+                         *ngFor="let c of filteredTamano | async"
+                         [value]="c.id">
+                         {{c.name}}
+                       </mat-option>
+                      </mat-select>  
+                      </mat-form-field>
+              
+                   
+              
+                     <mat-form-field class="matinput" fxFlex="35">
+                     <mat-select formControlName="pulsera" placeholder="{{'orden.bracelet' | translate}}" 
+                     #singleSelectcategoria>
+                     <mat-select-search  [formControl]="braceletFilterControl"> </mat-select-search>
+                     <mat-option   
+                         *ngFor="let c of filteredBracelet | async"
+                         [value]="c.id">
+                         {{c.name}}
+                     </mat-option>
+                     </mat-select>  
+                     </mat-form-field>
+
+
+
+                     <mat-form-field class="matinput" fxFlex="20">
+                      <input formControlName="eslabones" matInput placeholder="{{'orden.eslabones' | translate}}" 
+                             type="number">
+                     </mat-form-field>
+              </div>
+
+              <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+
+                  <mat-form-field class="matinput" fxFlex="100%">
+                      <input formControlName="servicio" matInput placeholder="{{'orden.servicio' | translate}}" 
+                             type="text"
+                             required [errorStateMatcher]="matcher">
+                             <mat-error *ngIf="form.get('servicio').hasError('required')">
+                              {{'orden.serviciorequerido' | translate}}
+                              </mat-error>
+                   </mat-form-field>
+
+                  </div> 
+
+                      <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                      <mat-form-field class="matinput" fxFlex="100%">
+                          <input formControlName="observaciones" matInput placeholder="{{'orden.observaciones' | translate}}" 
+                                 type="text">
+                       </mat-form-field>
+                  </div> 
+
+
+             
+        </mat-tab>
+            <mat-tab [disabled]="flagenviado" class="mattabgroup">
+                <ng-template mat-tab-label>
+                                        <em style="color:balck">Firma Manuscrita Digital</em>
+              </ng-template>
+                               <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                   <mat-card class="card">
+                                         <mat-card-header class="cardheader">
+                                              <mat-card-title class="cardtitle">Firma del Cliente</mat-card-title>
+                                        </mat-card-header>  
+                                   <mat-card-content class="cardcontent">  
+                                                <signature-pad *ngIf="firma" style="font-size:10px;"[options]="signaturePadOptions"> 
+                                                </signature-pad>
+                                                <div class="flex-container" *ngIf="!firma" >
+                                                        <img [src]="signature">
+                                                </div>
+                                             </mat-card-content>  
+                                             <mat-card-actions class="cardfooter">
+                                             <button mat-button (click)="onClearHandler($event)" type="button">LIMPIAR</button>
+                                             <button mat-button (click)="drawComplete($event)"  type="button">ACEPTAR</button>
+                                             </mat-card-actions>
+
+                                    </mat-card>                 
+                                     <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                                  
+                   
+               </div>
+
+                
+                <div fxLayout="row" class="rowcolor" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                        
+                  
+                    <mat-form-field class="matinput" fxFlex="75%">
+                    <input formControlName="nombrefirma" matInput placeholder="{{'orden.nombrefirma' | translate}}" 
+                        type="text">
+                    </mat-form-field>
+                </div> 
+
+                <div  class="cardcontent" style="display: none" #ntag>
+                    <div  fxLayout="row"  class="cardheader2">
+                    <img #imagen2 [src]="_imagen" width="400" height="100" >
+                       
+                    </div>  
+                    <div class="cardheader" >
+                      <p>
+                             PBX: 2331-9990<br>
+                              Correo: taller.relojeria@fsrichard.com<br>  
+                            
+                         Tienda : {{nombretienda}}<br>
+                         Orden de mantenimiento:  {{_orden}}
+                         <br>Nombre:{{nombre}}<br>
+                         Fecha:{{orden.fecha_recepcion | date :'dd-MM-yyyy h:mm:ss a'}}<br>
+                         Recepción:{{orden.responsable}}<br>
+                         Marca:{{MarcaProducto}}<br>
+                         Servicio:{{orden.servicio}}<br>
+                         </p>
+                      </div> 
+                      <div class="flex-container cardcontent cardfooter cardfirma">
+                        <p class="cardfooter">
+                        1. SERTERO SE HACE RESPONSABLE DE REALIZAR EL TRABAJO EN EL TIEMPO, FORMA, CONDICIONES 
+                        Y CALIDAD ESPECIFICADAS EN CORREO ENVIADO PREVIO AL TRABAJO,
+                         EL ESTADO EN QUE SE ENCUENTRE LA PIEZA DEJADA NO ES RESPONSABILIDAD DE SERTERO.<br>
+                         2. SERTERO HACE SABER DE ANTEMANO A EL CLIENTE QUE EN REPARACIÓN DE RELOJES
+                          DEBERÁ ESTAR SUJETO A QUE EXISTA FORNITURA DE RECAMBIO Y A ESPERA PARA REALIZAR SU TRABAJO.<br>
+                        3. SERTERO AVISARÁ A EL CLIENTE POR EL MEDIO MÁS IDÓNEO QUE SU REPARACIÓN ESTÁ LISTA PARA ENTREGA 
+                        Y EL VALOR A CANCELAR.EL CLIENTE TIENE 60 DÍAS PARA PAGAR Y RETIRAR LA REPARACIÓN, 
+                        PASADO ESTE TIEMPO SERTERO PUEDE DISPONER DE LA PIEZA PARA VENDER A EL MEJOR POSTOR 
+                        Y ASÍ RECUPERAR GASTOS, MANO DE OBRA Y OTROS SIN QUE POR ELLO EXISTA RESPONSABILIDAD 
+                        ALGUNA PARA SERTERO YA QUE EL CLIENTE NO LA RETIRÓ EN TIEMPO ESTIPULADO; 
+                        RAZÓN POR LA CUAL DESDE YA LA LIBERA DE CUALQUIER RESPONSABILIDAD Y SE 
+                        COMPROMETE POR PACTO DE NO PEDIR Y ACEPTA LA FORMA, TÉRMINOS Y CONDICIONES 
+                        EN QUE DEJA LA PIEZA A REPARARSE, POR SER ESTE UN CONTRATO DE ADHESIÓN, 
+                        EN FE DE LO CUAL FIRMO DE ACEPTADO.
+    
+                      </p>
+                       </div>
+                </div>  
+
+
+                <div  class="cardcontent" style="display: none" #nxtag>
+                    <div  fxLayout="row"  class="cardheader2">
+                    <img #imagen3 [src]="_imagen" width="400" height="100" >
+                       
+                    </div>  
+                    <div class="cardheader" >
+                      <p>
+                             PBX: 2331-9990<br>
+                              Correo: taller.relojeria@fsrichard.com<br>  
+                            
+                         Tienda : {{nombretienda}}<br>
+                         Orden de mantenimiento:  {{_orden}}
+                         <br>Nombre:{{nombre}}<br>
+                         Fecha:{{orden.fecha_recepcion | date :'dd-MM-yyyy h:mm:ss a'}}<br>
+                         Recepción:{{orden.responsable}}<br>
+                         Marca:{{MarcaProducto}}<br>
+                         Servicio:{{orden.servicio}}<br>
+                         </p>
+                      </div> 
+                     
+                </div>
+
+
+                <div  class="cardcontent" style="display: none" #tag>
+                        <div fxLayout="row" class="cardbarcode" >
+                      <!--     <ngx-barcode [bc-value]="_orden" [bc-display-value]="true"></ngx-barcode>
+                      -->
+                      </div>       
+      
+                       <div  fxLayout="row"  class="cardheader2">
+                           <canvas #canvas  width="500" height="100"></canvas>
+                       <img #imagen [src]="_imagen" width="500" height="100" >
+                       <canvas #canvas2  width="500" height="100"></canvas>
+                       </div>  
+               
+                      <div class="cardheader" >
+                         <p>  
+                          Tienda : {{nombretienda}}<br>Orden de mantenimiento:  {{_orden}}
+                          <br>Nombre:{{nombre}}<br>
+                          Fecha:{{orden.fecha_recepcion | date :'dd-MM-yyyy h:mm:ss a'}}<br>
+                          Recepcion:{{orden.responsable}}<br>
+                          Marca:{{MarcaProducto}}<br>
+                          Servicio:{{orden.servicio}}<br>
+                          </p>
+                       </div>   
+                          <div class="flex-container cardcontent cardfooter cardfirma">
+                          <p class="cardfooter">
+                          1. SERTERO SE HACE RESPONSABLE DE REALIZAR EL TRABAJO EN EL TIEMPO, FORMA, CONDICIONES 
+                          Y CALIDAD ESPECIFICADAS EN CORREO ENVIADO PREVIO AL TRABAJO,
+                           EL ESTADO EN QUE SE ENCUENTRE LA PIEZA DEJADA NO ES RESPONSABILIDAD DE SERTERO.<br>
+                           2. SERTERO HACE SABER DE ANTEMANO A EL CLIENTE QUE EN REPARACIÓN DE RELOJES
+                            DEBERÁ ESTAR SUJETO A QUE EXISTA FORNITURA DE RECAMBIO Y A ESPERA PARA REALIZAR SU TRABAJO.<br>
+                          3. SERTERO AVISARÁ A EL CLIENTE POR EL MEDIO MÁS IDÓNEO QUE SU REPARACIÓN ESTÁ LISTA PARA ENTREGA 
+                          Y EL VALOR A CANCELAR.EL CLIENTE TIENE 60 DÍAS PARA PAGAR Y RETIRAR LA REPARACIÓN, 
+                          PASADO ESTE TIEMPO SERTERO PUEDE DISPONER DE LA PIEZA PARA VENDER A EL MEJOR POSTOR 
+                          Y ASÍ RECUPERAR GASTOS, MANO DE OBRA Y OTROS SIN QUE POR ELLO EXISTA RESPONSABILIDAD 
+                          ALGUNA PARA SERTERO YA QUE EL CLIENTE NO LA RETIRÓ EN TIEMPO ESTIPULADO; 
+                          RAZÓN POR LA CUAL DESDE YA LA LIBERA DE CUALQUIER RESPONSABILIDAD Y SE 
+                          COMPROMETE POR PACTO DE NO PEDIR Y ACEPTA LA FORMA, TÉRMINOS Y CONDICIONES 
+                          EN QUE DEJA LA PIEZA A REPARARSE, POR SER ESTE UN CONTRATO DE ADHESIÓN, 
+                          EN FE DE LO CUAL FIRMO DE ACEPTADO.
+      
+                        </p>
+                         </div>
+                          <div class="flex-container  cardfirma">
+                            <img #_firma [src]="signature" width="300" height="150">
+                          </div>
+      
+                    </div>
+
+              
+              <div id="canvas" class="cardcontent"  style="display: none" #tag2>
+                     <div fxLayout="row" class="cardbarcode">
+                          <!-- <ngx-barcode [bc-value]="_orden" [bc-display-value]="true"></ngx-barcode>
+                          -->
+                          </div>
+                    
+                    <div  fxLayout="row" class="cardheader2" style="display : none;">
+                       <img #imagen2 [src]="_imagen" width="500" height="100" >
+                    </div>  
+
+                 <div fxLayout="row" class="cardheader">
+                        <p>
+                        Tienda : {{nombretienda}}<br>Orden de Mantenimiento<br>Orden : {{_orden}}
+                        <br> Nombre:{{nombre}}<br>
+                        Fecha:{{orden.fecha_recepcion | date :'dd-MM-yyyy h:mm:ss a'}}<br>
+                        Recepciono:{{orden.responsable}}<br>
+                        Marca:{{MarcaProducto}}<br>
+                        {{orden.responsable}}<br>
+                        Observaciones: {{orden.observaciones}}<br>
+                        Servicio:{{orden.servicio}}<br>
+                    </p>
+              </div> 
+                       <div class="flex-container cardfirma">
+                       <canvas #canvas3  width="400" height="100"></canvas>   
+                       <img #Firmax2 [src]="signature"  width="300" height="50">
+                      
+                    </div>
+                       
+               </div>
+            </div>
+           
+            </mat-tab>
+            <mat-tab [disabled]='tabtraslado' class="mattabgroup">
+                 <ng-template mat-tab-label>
+                 <em style="color:balck">Enviar Orden</em>
+                 </ng-template>
+                 <div class="container" style="border-top:inset 2px; font-weight: bold; margin-left:5px;" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="left">
+                 <em style="color:balck; ">Tralado de Orden</em>
+        </div>
+        <div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="left">
+     
+
+                <mat-form-field class="Input" style="margin-right:5px;height: 100% " fxFlex="35%" >
+                <input formControlName="observatraslado" matInput>
+                </mat-form-field> 
+
+                           <mat-form-field class="Input" style="margin-right:5px;height: 100% " fxFlex="20%">
+                               <mat-select 
+                                placeholder="Area"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngModel]="area"
+                                disabled
+                                (selectionChange)="onSelectionChanged($event)">
+                                <mat-option>Ninguno</mat-option>       
+                                <mat-option  *ngFor="let est of roles"
+                                [value]="est.id">
+                                {{est.name}}
+                                </mat-option>
+                                </mat-select>
+                                </mat-form-field>
+     
+                        <mat-form-field class="matinput" style="margin-right:5px" fxFlex="25%">
+                        <mat-select  (selectionChange)="onSelectionChangedusr($event)"placeholder="{{'orden.tecnico' | translate}}">> 
+                        <mat-option>Ninguno</mat-option>       
+                        <mat-option   
+                                *ngFor="let c of rolUsuario"
+                                [value]="c.email">
+                                {{c.firstname}} {{c.lastname}}
+                        </mat-option>
+                        </mat-select>  
+                        </mat-form-field>
+
+            <button  [disabled]="flagenviado" type="button" mat-raised-button  class="btn btn-primary" (click)="actualizaEnvio()" >
+                     Trasladar Orden
+           </button>
+     </div>     
+  
+            </mat-tab>
+           </mat-tab-group>
+        </form>
+    </mat-tab>
+
+
+        <mat-tab [disabled]="desabilitaingreso" style="background-color: #3700b3"  class="mattabgroup">
+            <form  novalidate id="CreateForm" (ngSubmit)="guardar($event,'orden1')" #formDirective="ngForm" 
+            [formGroup]="form" fxLayout="column" fxLayoutAlign="start"
+                fxFlex="1 0 auto" name="form">
+
+            <ng-template mat-tab-label>
+                 <mat-icon>assignment_ind</mat-icon>
+                <span>Datos del Cliente</span>
+             </ng-template>
+
+             <div fxLayout="row" fxFlex="1 0 auto">
+                <mat-form-field class="Input mySelectedPanel" fxFlex="15">
+                     <input formControlName="code" matInput placeholder="{{'orden.CODE' | translate}}" 
+                            name="code"
+                                                        type="number">
+                </mat-form-field>
+                 
+                <mat-form-field class="Input" fxFlex="50" >
+                              <mat-icon style='color:cadetblue' matSuffix>person</mat-icon>
+                             <input formControlName="firstName" matInput placeholder="{{'orden.FIRSTNAME' | translate}}" 
+                                      name="firstName"
+                           >
+                                   
+                    
+                </mat-form-field>
+          
+
+                <mat-form-field class="Input" fxFlex="50" >
+                          <mat-icon style='color:rgb(2, 5, 5)'  matSuffix>person</mat-icon>   
+                    <input matInput formControlName="lastName" placeholder="{{'orden.LASTNAME' | translate}}" 
+                           name="lastName"
+                          >
+               
+                </mat-form-field>
+
+             </div>
+
+<div class="rowcolor" fxLayout="row"  fxFlex="1 0 auto">
+        <mat-form-field class="Input" fxFlex="15">
+        <input  formControlName="nit" matInput placeholder="{{'orden.NIT' | translate}}" 
+        name="nit"
+      
+        >
+        </mat-form-field>
+        <mat-form-field class="Input" fxFlex="13">
+        <input formControlName="dpi" matInput placeholder="{{'orden.DPI' | translate}}" 
+        name="dpi"
+      
+        type="number"
+    >
+
+      
+         
+       </mat-form-field>
+
+       <mat-form-field class="Input" fxFlex="22.5">
+          <mat-select formControlName='state' (selectionChange)="onSelectionChanged($event)"
+           placeholder="{{'orden.STATE' | translate}}"  
+           #singleSelect>
+             <mat-option>Ninguno</mat-option>
+             <mat-option 
+             >
+            </mat-option>
+          </mat-select>  
+    </mat-form-field>
+    
+
+    <mat-form-field class="Input" fxFlex="38">
+        <mat-select formControlName="city" placeholder="{{'orden.CITY' | translate}}" 
+         #singleSelectCity>
+                    <mat-option>Ninguno</mat-option>
+           <mat-option>   
+           
+           </mat-option>
+        </mat-select>  
+  </mat-form-field>
+
+
+  </div>  
+
+<div fxLayout="row" fxFlex="1 0 auto">
+
+    <mat-form-field class="Input" fxFlex="46" >
+          <mat-icon style='color:cadetblue'  matSuffix>place</mat-icon>
+        <textarea  matInput formControlName="address"  placeholder="{{'orden.ADDRESS' | translate}}" 
+        name="address"
+        >
+        </textarea>
+      
+     </mat-form-field>
+
+    <mat-form-field  class="Input" fxFlex="47">
+          <mat-icon style='color:cadetblue'  matSuffix>place</mat-icon>
+        <textarea  matInput formControlName="address2"  placeholder="{{'orden.ADDRESS2' | translate}}"
+        name="address2"
+       ></textarea>
+    </mat-form-field>
+
+</div>
+
+<div fxLayout="row"  fxFlex="1 0 auto">
+               <mat-checkbox style="margin-top:19px;" 
+               class="Input" fxFlex="8"
+               formControlName="notemail"
+      >
+        Sin Email
+    </mat-checkbox>
+
+    <mat-form-field class="Input" fxFlex="34" >
+                  <mat-icon style='color:cadetblue' matSuffix>mail</mat-icon>
+        <input formControlName="email"   matInput placeholder="{{'orden.EMAIL' | translate}} " 
+               name="email"
+               >
+    
+     
+    </mat-form-field>
+  
+      <mat-form-field class="Input" fxFlex="30" >
+                    <mat-icon style='color:cadetblue' matSuffix>mail</mat-icon>
+          <input formControlName="email2"   matInput placeholder="{{'orden.EMAIL' | translate}} " 
+                 name="email2"
+                 >
+        
+       
+      </mat-form-field>
+
+
+            <mat-form-field class="Input" fxFlex="15" >
+              <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+              <input matInput  formControlName="telephonemovile"  placeholder="{{'orden.TELEPHONEMOVILE' | translate}}" 
+                 name="telephonemovile"
+              >
+   
+          </mat-form-field>
+        </div> 
+            <div fxLayout="row" fxFlex="1 0 auto">
+  
+            <mat-form-field class="Input" fxFlex="21">
+                <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+              <input formControlName="telephonework"  matInput placeholder="{{'orden.TELEPHONEWORK' | translate}}" 
+              name="telephonework"
+           
+                      >
+          </mat-form-field>
+          
+                     <mat-form-field class="Input" fxFlex="21">
+                            <mat-icon style='color:cadetblue' matSuffix>contact_phone</mat-icon>
+                            <input matInput formControlName="telephonehouse" placeholder="{{'orden.TELEPHONEHOME' | translate}}" 
+                             name="telephonehouse"
+                    >
+                    </mat-form-field>
+                
+             </div>    
+
+            
+          </form>            
+          </mat-tab>
+   
+</mat-tab-group>
+            
+  </div>    
