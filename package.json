@@ -55,7 +55,7 @@
     "jspdf": "1.5.3",
     "lodash": "4.17.10",
     "material-time-control": "github:SteveDunlap13/MaterialTimeControl",
-    "moment": "2.22.2",
+    "moment": "2.29.2",
     "ng-pick-datetime": "7.0.0",
     "ng2-charts": "1.6.0",
     "ng2-toastr": "4.1.2",
