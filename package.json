@@ -52,7 +52,7 @@
     "html2canvas": "1.0.0-alpha.12",
     "image-to-base64": "2.0.1",
     "jquery": "3.3.1",
-    "jspdf": "1.5.3",
+    "jspdf": "2.5.1",
     "lodash": "4.17.10",
     "material-time-control": "github:SteveDunlap13/MaterialTimeControl",
     "moment": "2.22.2",
